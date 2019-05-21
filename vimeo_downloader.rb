@@ -8,10 +8,11 @@ def download_all_videos_from_course(course_id)
   course = Course.new(course_id)
   course.get_course_info
 
-  folder_name = course.title
+  folder_name = "#{course.id} - #{course.title}"
   Dir.mkdir(folder_name) unless File.exists?(folder_name)
 
   course.lectures.each do |lecture|
+    puts "Starting to download #{lecture.id} - #{lecture.title}"
     vimeo_service = VimeoService.new(lecture.vimeo_video_id)
     video_info = vimeo_service.get_video_info
     video_link = ''
@@ -24,6 +25,7 @@ def download_all_videos_from_course(course_id)
 
     video_file = open(video_link)
     IO.copy_stream(video_file, "./#{folder_name}/#{lecture.video_file_name}.mp4")
+    puts "Downloaded: #{lecture.id} - #{lecture.title}"
   end
 end
 
