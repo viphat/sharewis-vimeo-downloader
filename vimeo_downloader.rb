@@ -4,11 +4,19 @@ require_relative './vimeo_service.rb'
 require_relative './lecture.rb'
 require_relative './course.rb'
 
+def sanitize(filename)
+  bad_chars = [ '/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', '.', ' ' ]
+  bad_chars.each do |bad_char|
+    filename.gsub!(bad_char, '_')
+  end
+  filename
+end
+
 def download_all_videos_from_course(course_id)
   course = Course.new(course_id)
   course.get_course_info
 
-  folder_name = "#{course.id} - #{course.title}"
+  folder_name = sanitize("#{course.id} - #{course.title}")
   Dir.mkdir(folder_name) unless File.exists?(folder_name)
 
   course.lectures.each do |lecture|
@@ -24,7 +32,7 @@ def download_all_videos_from_course(course_id)
     end
 
     video_file = open(video_link)
-    IO.copy_stream(video_file, "./#{folder_name}/#{lecture.video_file_name}.mp4")
+    IO.copy_stream(video_file, "./#{folder_name}/#{sanitize(lecture.video_file_name)}.mp4")
     puts "Downloaded: #{lecture.id} - #{lecture.title}"
   end
 end
