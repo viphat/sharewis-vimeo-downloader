@@ -5,7 +5,7 @@ require_relative './lecture.rb'
 require_relative './course.rb'
 
 def sanitize(filename)
-  bad_chars = [ '/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', '.', ' ' ]
+  bad_chars = ['/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', '.']
   bad_chars.each do |bad_char|
     filename.gsub!(bad_char, '_')
   end
